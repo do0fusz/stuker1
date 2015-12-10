@@ -3,10 +3,14 @@ Rails.application.routes.draw do
   authenticated :user, -> user { user.admin? } do 
     mount Delayed::Web::Engine, at: '/jobs'
   end
-  
+
   get 'auth/:provider/callback', to: 'connections#create'
   resources :connections, only: [:destroy]
-  resources :posts
+  resources :posts do 
+    member do 
+      put :cancel 
+    end
+  end
 
   devise_for :users, controllers: { registrations: 'registrations'}
   get 'pages/home'
